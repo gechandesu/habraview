@@ -1,7 +1,2 @@
-all: build
-
-build:
-	v -o habraview src
-
-prod:
-	v -o habraview -prod -cc clang -compress src
+bin:
+	v -prod -cflags -static -d habraview_version=$$(git describe --tags) .

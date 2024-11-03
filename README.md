@@ -47,5 +47,5 @@ http://localhost:8888?id=853062
 Нужны компиляторы `gcc` и [v](https://vlang.io):
 
 ```
-v -prod -cflags -static -cflags -s .
+make
 ```

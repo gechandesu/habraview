@@ -2,6 +2,9 @@ module main
 
 import cli
 import habr
+import net
+import net.urllib
+import net.http.mime
 import os
 import veb
 
@@ -15,6 +18,22 @@ pub struct App {
 
 struct Response {
 	msg string
+}
+
+const embedded = {
+	'style.css':         $embed_file('assets/style.css')
+	'highlight.min.css': $embed_file('assets/highlight.min.css')
+	'highlight.min.js':  $embed_file('assets/highlight.min.js')
+	'habrfixer.js':      $embed_file('assets/habrfixer.js')
+	'favicon.ico':       $embed_file('assets/favicon.ico')
+}
+
+@['/assets/:filename']
+fn (a &App) assets(mut ctx Context, filename string) veb.Result {
+	asset := embedded[filename] or { return ctx.not_found() }
+	mimetype := mime.get_mime_type(os.file_ext(filename).trim_left('.'))
+	ctx.set_content_type(mimetype)
+	return ctx.text(asset.to_string())
 }
 
 @[get]
@@ -32,35 +51,42 @@ fn (a &App) index(mut ctx Context) veb.Result {
 	return $veb.html()
 }
 
-fn runserver(port int) ! {
-	os.chdir(os.dir(@FILE))!
+fn runserver(host string, port int) ! {
 	mut app := &App{}
-	app.handle_static('assets', false)!
-	app.serve_static('/favicon.ico', 'assets/favicon.ico')!
-	veb.run[App, Context](mut app, port)
+	mut ipversion := net.AddrFamily.ip
+	if host.contains(':') {
+		ipversion = net.AddrFamily.ip6
+	}
+	params := veb.RunParams{
+		host:   host
+		port:   port
+		family: ipversion
+	}
+	veb.run_at[App, Context](mut app, params)!
 }
 
 fn main() {
 	mut app := cli.Command{
 		name:        'habraview'
+		usage:       '[host][:port]'
 		description: 'Habr.com posts viewer.'
 		version:     $d('habraview_version', '0.0.0')
 		defaults:    struct {
 			man: false
 		}
 		execute:     fn (cmd cli.Command) ! {
-			port := cmd.flags.get_int('port') or { 8080 }
-			runserver(port)!
+			mut host, mut port := '0.0.0.0', '8888'
+			if cmd.args.len == 1 {
+				host, port = urllib.split_host_port(cmd.args[0])
+				if host.is_blank() {
+					host = '0.0.0.0'
+				}
+				if port.is_blank() {
+					port = '8888'
+				}
+			}
+			runserver(host, port.int())!
 		}
-		flags:       [
-			cli.Flag{
-				flag:          .int
-				name:          'port'
-				abbrev:        'p'
-				description:   'Listen port [default: 8888].'
-				default_value: ['8888']
-			},
-		]
 	}
 	app.setup()
 	app.parse(os.args)
