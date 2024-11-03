@@ -12,13 +12,7 @@ pub struct Context {
 	veb.Context
 }
 
-pub struct App {
-	veb.StaticHandler
-}
-
-struct Response {
-	msg string
-}
+pub struct App {}
 
 const embedded = {
 	'style.css':         $embed_file('assets/style.css')
@@ -40,18 +34,16 @@ fn (a &App) assets(mut ctx Context, filename string) veb.Result {
 fn (a &App) index(mut ctx Context) veb.Result {
 	article_id := ctx.query['id'] or { habr.get_id_from_url(ctx.query['url']) or { '' } }
 	client := habr.Habr.new()
-	raw_article := client.get_article(article_id.int()) or {
-		return ctx.json(Response{ msg: err.str() })
-	}
+	raw_article := client.get_article(article_id.int()) or { return ctx.server_error(err.str()) }
 	raw_comments := client.get_article_comments(article_id.int()) or {
-		return ctx.json(Response{ msg: err.str() })
+		return ctx.server_error(err.str())
 	}
 	article := habr.Article.parse(raw_article)
 	comments := habr.Comments.parse(raw_comments)
 	return $veb.html()
 }
 
-fn runserver(host string, port int) ! {
+fn serve(host string, port int) ! {
 	mut app := &App{}
 	mut ipversion := net.AddrFamily.ip
 	if host.contains(':') {
@@ -65,6 +57,20 @@ fn runserver(host string, port int) ! {
 	veb.run_at[App, Context](mut app, params)!
 }
 
+fn run_server(cmd cli.Command) ! {
+	mut host, mut port := '0.0.0.0', '8888'
+	if cmd.args.len == 1 {
+		host, port = urllib.split_host_port(cmd.args[0])
+		if host.is_blank() {
+			host = '0.0.0.0'
+		}
+		if port.is_blank() {
+			port = '8888'
+		}
+	}
+	serve(host, port.int())!
+}
+
 fn main() {
 	mut app := cli.Command{
 		name:        'habraview'
@@ -74,19 +80,7 @@ fn main() {
 		defaults:    struct {
 			man: false
 		}
-		execute:     fn (cmd cli.Command) ! {
-			mut host, mut port := '0.0.0.0', '8888'
-			if cmd.args.len == 1 {
-				host, port = urllib.split_host_port(cmd.args[0])
-				if host.is_blank() {
-					host = '0.0.0.0'
-				}
-				if port.is_blank() {
-					port = '8888'
-				}
-			}
-			runserver(host, port.int())!
-		}
+		execute:     run_server
 	}
 	app.setup()
 	app.parse(os.args)

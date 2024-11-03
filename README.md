@@ -57,3 +57,9 @@ make
 docker build -t habraview:latest .
 docker run --rm -p 8888:8888 habraview:latest
 ```
+
+или:
+
+```
+docker compose up -d
+```
