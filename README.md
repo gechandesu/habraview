@@ -34,7 +34,7 @@
 http://localhost:8888?url=https://habr.com/ru/articles/853062/
 ```
 
-Адрес статьи на Хабре можно передать целиком как значение quey-параметра `url`
+Адрес статьи на Хабре можно передать целиком как значение query-параметра `url`
 или как `id`:
 
 ```
@@ -55,5 +55,5 @@ make
 
 ```
 docker build -t habraview:latest .
-docker run --rm habraview:latest
+docker run --rm -p 8888:8888 habraview:latest
 ```
