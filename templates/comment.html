@@ -1,0 +1,16 @@
+<div class="comment" id="@{comment.id}">
+  <p class="comment-header">[<a href="#@{comment.id}">@{comment.id}</a>] <strong>@{comment.author.alias}</strong>
+    @if comment.parent_id != ''
+    <span> in reply to <a href="#@{comment.parent_id}">#@{comment.parent_id}</a></span>
+    @end
+  </p>
+  <p>@{comment.message}</p>
+  @if comment.replies_ids.len > 0  
+  <div class="replies-list">
+    <span>Replies: </span>
+    @for reply_id in comment.replies_ids
+    <span><a href="#@{reply_id}">#@{reply_id}</a></span>
+    @end
+  </div>
+  @end
+</div>

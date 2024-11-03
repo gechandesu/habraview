@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@{article.title}</title>
+  @css '/assets/style.css'
+  @css '/assets/highlight.min.css'
+</head>
+<body>
+  <nav></nav>
+  <header>
+    <h1 id="article-title">@{article.title}</h1>
+    <p id="date-published">@{article.published_at}</p>
+  </header>
+  <main>
+    <article>
+      @{article.text}
+    </article>
+    <div id="tags">
+    @if article.tags.len > 0
+      <span><strong>Тэги: </strong></span>
+      @for tag in article.tags
+      <span class="comma">
+        <a href="https://habr.com/ru/search/?target_type=posts&order=relevance&q=%5B@{tag.title}%5D">
+          @{tag.title}
+        </a>
+      </span>
+      @end
+    @end
+    </div>
+    <div id="hubs">
+    @if article.hubs.len > 0
+      <span><strong>Хабы: </strong></span>
+      @for hub in article.hubs
+      <span class="comma">
+        <a href="https://habr.com/ru/hubs/@{hub.alias}/articles/">
+          @{hub.title}
+        </a>
+      </span>
+      @end
+    @end
+    </div>
+    <div id="comments">
+      <p><strong>Комментарии</strong> (@{comments.items.len})</p>
+      @for comment in comments.items
+        @include 'comment.html'
+      @end
+    <div>
+  </main>
+  <footer>
+  </footer>
+  @js '/assets/habr-fixer.js'
+  @js '/assets/highlight.min.js'
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+body {
+  background-color: #F1F5F9;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+header, main, footer {
+  margin: 0 auto;
+  max-width: 1080px;
+}
+article {
+  background-color: white;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #E6E7E9;
+  border-radius: 8px;
+}
+pre code.hljs {
+  border-radius: 8px;
+}
+article img {
+  height: 100% !important;
+  width: 100% !important;
+  object-fit: scale-down;
+}
+blockquote {
+  border-left: 4px solid #bbbbbb;
+  padding-left: 8px;
+  margin-left: 4px;
+}
+figure {
+  text-align: center;
+}
+figcaption {
+  text-align: center;
+  opacity: 60%;
+}
+#date-published {
+  opacity: 60%;
+}
+#article-title {
+  font-size: 28px;
+  font-weight: 500;
+}
+#tags {
+  margin: 1rem 0;
+}
+#hubs {
+  margin: 1rem 0;
+}
+span.comma:not(:empty) ~ span.comma:not(:empty):before {
+  content: ", ";
+}
+#comments {
+  margin-top: 1rem;
+  background-color: white;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #E6E7E9;
+  border-radius: 8px;
+}
+.comment {
+  padding: 0.5rem 0;
+  margin: 0;
+}
+.comment-header {
+  background-color: #f5f5f5;
+}
+.replies-list {
+  margin: 1rem 0;
+}
+ul.inline-list {
+  margin: 0;
+  padding: 0;
+}
+ul.inline-list li {
+  display: inline;
+  list-style: none;
+}
+table, th, td {
+  border: 1px solid #E6E7E9;
+  border-collapse: collapse;
+  padding: 2px 16px;
+}
+:target {
+  border-left: 4px solid black;
+  padding: 0 1rem !important;
+  background-color: #f8f8f8;
+  .comment-header {
+    background-color: #cccccc;
+  }
+}
