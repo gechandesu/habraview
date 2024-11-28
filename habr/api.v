@@ -3,7 +3,7 @@ module habr
 import net.http
 
 pub struct Habr {
-	baseurl string = $d('habr_baseurl', 'https://habr.com')
+	baseurl string = $d('hv_habr_baseurl', 'https://habr.com')
 }
 
 pub fn Habr.new() Habr {

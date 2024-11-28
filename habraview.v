@@ -76,7 +76,7 @@ fn main() {
 		name:        'habraview'
 		usage:       '[host][:port]'
 		description: 'Habr.com posts viewer.'
-		version:     $d('habraview_version', '0.0.0')
+		version:     $d('hv_version', '0.0.0')
 		defaults:    struct {
 			man: false
 		}

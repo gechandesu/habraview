@@ -1,2 +1,2 @@
 bin:
-	v -prod -cflags -static -d habraview_version=$$(git describe --tags) .
+	v -prod -skip-unused -cflags -static -d hv_version=$$(git describe --tags) .
